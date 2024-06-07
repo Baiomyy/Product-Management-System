@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./css/bootstrap.min.css">
+    <link rel="stylesheet" href="./css/style.css">
+
+</head>
+
+<body>
+    <section class="py-5">
+        <div class="container">
+            <div class="w-75 mx-auto">
+
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="productTitle" placeholder="Product Title"
+                        oninput="validateFormInputs(this)" />
+                    <span class="text-danger d-none">The title must be between 3 and 50 characters </span>
+                    <label for="productTitle">Product Title</label>
+                </div>
+
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="productPrice" placeholder="Product Price"
+                        oninput="validateFormInputs(this)" />
+                    <span class="text-danger d-none">The price must be between 6,000 and 60,000</span>
+                    <label for="productPrice">Product Price</label>
+                </div>
+
+                <div class="form-floating mb-3">
+                    <input list="categories" type="text" class="form-control" id="productCategory"
+                        placeholder="Product Category" oninput="validateFormInputs(this)" />
+                    <span class="text-danger d-none">Choose from TV, Mobile, Screens, Laptops, Watches, or
+                        Electronics.</span>
+                    <label for="productCategory">Product Category</label>
+
+                    <datalist id="categories">
+                        <option value="TV" />
+                        <option value="Mobile" />
+                        <option value="Screens" />
+                        <option value="Laptops" />
+                        <option value="Watches" />
+                        <option value="Electronics" />
+                    </datalist>
+                </div>
+
+                <div id="imageFileName"></div>
+                <div class="form-floating mb-3">
+                    <input type="file" class="form-control" id="productImage" placeholder="Product Image"
+                        oninput="validateFormInputs(this)" />
+                    <span class="text-danger d-none">Invalid image file. Please select a JPG, JPEG, PNG, GIF, or
+                        BMP.</span>
+                    <label for="productImage">Product Image</label>
+                </div>
+
+                <div class="form-floating mb-3">
+                    <textarea type="text" class="form-control" id="productDesc" placeholder="Product Description"
+                        oninput="validateFormInputs(this)">
+                    </textarea>
+                    <span class="text-danger d-none">It can only contain letters and spaces, and must be less than 251
+                        characters long.</span>
+                    <label for="productDesc">Product Description</label>
+                </div>
+
+                <div class="d-flex">
+                    <button id="addBtn" class="btn btn-info me-3" onclick="addProduct()">Add Product</button>
+                    <button id="updateBtn" class="btn btn-success me-3 d-none" onclick="updateProduct()">Update
+                        Product</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-5">
+        <div class="container">
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control" id="productSearch" placeholder="Product Search"
+                    oninput="searchProduct()" />
+                <label for="productSearch">Product Search</label>
+            </div>
+
+            <div class="row gy-4" id="productsRow">
+
+            </div>
+    </section>
+
+    <script src="index.js"></script>
+</body>
+
+</html>

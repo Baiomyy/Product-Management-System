@@ -21,21 +21,25 @@ function addProduct() {
         validateFormInputs(productCategoryInput) &&
         validateFormInputs(productImageInput) &&
         validateFormInputs(productDescInput)) {
-        var product = {
-            title: productTitleInput.value,
-            price: productPriceInput.value,
-            category: productCategoryInput.value,
-            image: `images/${productImageInput.files[0]?.name}`,
-            description: productDescInput.value
-        }
 
-        productList.push(product);
-        addToLocalStorage();
-        fillFormValues();
-        displayProducts(productList);
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            var product = {
+                title: productTitleInput.value,
+                price: productPriceInput.value,
+                category: productCategoryInput.value,
+                image: e.target.result, // Store base64 encoded image
+                imageName: productImageInput.files[0].name, // Store the image name
+                description: productDescInput.value
+            }
+
+            productList.push(product);
+            addToLocalStorage();
+            fillFormValues();
+            displayProducts(productList);
+        };
+        reader.readAsDataURL(productImageInput.files[0]);
     }
-
-
 }
 
 function addToLocalStorage() {
@@ -46,14 +50,13 @@ function fillFormValues(product) {
     productTitleInput.value = product ? product.title : '';
     productPriceInput.value = product ? product.price : '';
     productCategoryInput.value = product ? product.category : '';
-    if (product && product.image) {
-        var imageName = product.image.split('/').pop(); 
-        document.getElementById("imageFileName").textContent = imageName; 
-    } else {
-        document.getElementById("imageFileName").textContent = ''; 
-    }
-  
     productImageInput.value = '';
+
+    if (product && product.imageName) {
+        document.getElementById("imageFileName").textContent = product.imageName;
+    } else {
+        document.getElementById("imageFileName").textContent = '';
+    }
 
     productDescInput.value = product ? product.description : '';
 }
@@ -108,14 +111,11 @@ function deleteProduct(title) {
 
 var updatedIndex;
 function editProduct(title) {
-    console.log(title);
     updatedIndex = productList.findIndex(product => product.title === title);
-    console.log(updatedIndex);
 
     if (updatedIndex > -1) {
         addBtn.classList.add("d-none");
         updateBtn.classList.remove("d-none");
-        var productImage = productList[updatedIndex].image.split('/').pop();
 
         fillFormValues(productList[updatedIndex]);
     }
@@ -125,14 +125,27 @@ function updateProduct() {
     addBtn.classList.remove("d-none");
     updateBtn.classList.add("d-none");
 
-    productList[updatedIndex].title = productTitleInput.value;
-    productList[updatedIndex].price = productPriceInput.value;
-    productList[updatedIndex].category = productCategoryInput.value;
-    productList[updatedIndex].description = productDescInput.value;
+    var updatedProduct = productList[updatedIndex];
+    updatedProduct.title = productTitleInput.value;
+    updatedProduct.price = productPriceInput.value;
+    updatedProduct.category = productCategoryInput.value;
+    updatedProduct.description = productDescInput.value;
 
-    addToLocalStorage();
-    displayProducts(productList);
-    fillFormValues();
+    if (productImageInput.files.length > 0) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            updatedProduct.image = e.target.result;
+            updatedProduct.imageName = productImageInput.files[0].name;
+            addToLocalStorage();
+            displayProducts(productList);
+            fillFormValues();
+        };
+        reader.readAsDataURL(productImageInput.files[0]);
+    } else {
+        addToLocalStorage();
+        displayProducts(productList);
+        fillFormValues();
+    }
 }
 
 function validateFormInputs(element) {
@@ -147,7 +160,6 @@ function validateFormInputs(element) {
     var isValid = regex[element.id].test(element.value);
 
     if (isValid) {
-        console.log("matched");
         if (element.classList.contains("is-invalid")) {
             element.classList.replace("is-invalid", "is-valid")
         } else {
@@ -155,7 +167,6 @@ function validateFormInputs(element) {
         }
         element.nextElementSibling.classList.replace("d-block", "d-none");
     } else {
-        console.log("not matched");
         if (element.classList.contains("is-valid")) {
             element.classList.replace("is-valid", "is-invalid")
         } else {
@@ -165,6 +176,3 @@ function validateFormInputs(element) {
     }
     return isValid;
 }
-
-
-
